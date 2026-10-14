@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YUMI — Sabores que sorprenden, recetas que disfrutas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        yumi: {
+                            cream: '#FAF6F0',
+                            beige: '#F3E8DC',
+                            warm: '#E6D3C1',
+                            brown: '#4A3525',
+                            dark: '#2C1E16',
+                            accent: '#D97706',
+                            accentDark: '#B45309'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        serif: ['Georgia', 'Cambria', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .product-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .product-card:hover { transform: translateY(-4px); }
+        /* Custom scrollbar for drawer */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #FAF6F0; }
+        ::-webkit-scrollbar-thumb { background: #E6D3C1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D97706; }
+    </style>
+</head>
+<body class="bg-yumi-cream text-yumi-dark font-sans flex flex-col min-h-screen selection:bg-yumi-warm selection:text-yumi-dark">
+
+    <!-- ENCABEZADO / NAVBAR -->
+    <header class="sticky top-0 z-40 bg-yumi-cream/95 backdrop-blur-md border-b border-yumi-warm/40 shadow-xs">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-2 group">
+                <span class="font-serif text-3xl font-extrabold tracking-wider text-yumi-brown group-hover:text-yumi-accent transition">YUMI</span>
+            </a>
+
+            <!-- Navegación Escritorio -->
+            <nav class="hidden md:flex items-center gap-6 font-medium text-yumi-brown text-sm">
+                <a href="#catalogo" class="hover:text-yumi-accent transition">Nuestro Catálogo</a>
+                <a href="#contacto" class="hover:text-yumi-accent transition">Contáctanos</a>
+                <button onclick="toggleAdminModal()" class="text-xs bg-yumi-beige hover:bg-yumi-warm text-yumi-brown font-semibold px-3.5 py-2 rounded-full border border-yumi-warm/80 transition flex items-center gap-1.5 shadow-xs">
+                    <i class="fa-solid fa-lock text-yumi-accent"></i> Administración
+                </button>
+            </nav>
+
+            <!-- Botón Carrito & Acceso Administración Móvil -->
+            <div class="flex items-center gap-2.5">
+                <button onclick="toggleCartDrawer(true)" class="relative bg-yumi-brown text-white p-2.5 rounded-full hover:bg-yumi-dark transition shadow-sm active:scale-95" aria-label="Ver carrito">
+                    <i class="fa-solid fa-basket-shopping text-base"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-yumi-accent text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-yumi-cream hidden">0</span>
+                </button>
+                <button onclick="toggleAdminModal()" class="md:hidden text-xs bg-yumi-beige p-2.5 rounded-full border border-yumi-warm text-yumi-brown shadow-xs" title="Administración">
+                    <i class="fa-solid fa-lock text-yumi-accent"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- PORTADA / HERO -->
+    <section class="relative bg-yumi-dark text-white overflow-hidden py-16 md:py-24">
+        <div class="absolute inset-0 z-0 opacity-35">
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80" alt="Gastronomía YUMI" class="w-full h-full object-cover">
+        </div>
+        <div class="relative z-10 max-w-4xl mx-auto px-6 text-center">
+            <span class="inline-block bg-yumi-accent text-white text-xs uppercase tracking-widest font-bold px-4 py-1.5 rounded-full mb-4 shadow-sm">
+                Gastronomía Artesanal & Innovadora
+            </span>
+            <h1 class="font-serif text-5xl md:text-7xl font-bold mb-4 tracking-tight text-yumi-cream">YUMI</h1>
+            <p class="text-xl md:text-2xl font-light text-yumi-beige mb-2">Sabores que sorprenden, recetas que disfrutas.</p>
+            <p class="text-sm md:text-base text-gray-300 mb-8 italic">Cada fin de semana, una nueva experiencia gastronómica.</p>
+            <a href="#catalogo" class="inline-flex items-center gap-2 bg-yumi-accent hover:bg-yumi-accentDark text-white font-semibold px-8 py-3.5 rounded-full shadow-lg transition transform hover:-translate-y-0.5 active:translate-y-0">
+                <span>Ver catálogo</span>
+                <i class="fa-solid fa-arrow-down text-sm"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-12">
+
+        <!-- CATÁLOGO DE PRODUCTOS -->
+        <section id="catalogo" class="scroll-mt-20">
+            <div class="text-center mb-10">
+                <h2 class="font-serif text-3xl md:text-4xl font-bold text-yumi-brown">Nuestro catálogo</h2>
+                <div class="w-16 h-1 bg-yumi-accent mx-auto mt-2 rounded-full"></div>
+                <p class="text-yumi-brown/80 mt-3 text-sm md:text-base">Productos artesanales preparados semanalmente con ingredientes seleccionados.</p>
+            </div>
+
+            <!-- Notification Banner -->
+            <div id="toast-notification" class="fixed bottom-4 right-4 z-50 bg-yumi-brown text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-all duration-300 translate-y-20 opacity-0 pointer-events-none">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+                <span id="toast-message" class="text-sm font-medium"></span>
+            </div>
+
+            <!-- Grid de Productos -->
+            <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <!-- Se llena dinámicamente con JS -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN CONTÁCTANOS -->
+        <section id="contacto" class="mt-20 border-t border-yumi-warm/60 pt-12">
+            <div class="bg-yumi-beige/40 rounded-3xl p-6 md:p-10 border border-yumi-warm/60 text-center max-w-3xl mx-auto shadow-xs">
+                <h2 class="font-serif text-2xl md:text-3xl font-bold text-yumi-brown mb-2">Contáctanos</h2>
+                <p class="text-yumi-brown/80 text-sm mb-8">¿Tienes dudas o deseas realizar un pedido especial? Comunícate directamente con nosotros.</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-2">
+                    <!-- WhatsApp -->
+                    <a href="https://wa.me/573212731924" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center p-5 bg-white rounded-2xl shadow-xs hover:shadow-md transition border border-yumi-warm/40 group">
+                        <i class="fa-brands fa-whatsapp text-3xl text-emerald-600 mb-2 group-hover:scale-110 transition"></i>
+                        <span class="text-xs text-gray-500 uppercase font-semibold tracking-wider">WhatsApp</span>
+                        <span class="text-sm font-bold text-yumi-brown mt-1">3212731924</span>
+                    </a>
+                    
+                    <!-- Instagram -->
+                    <a id="instagram-link" href="https://instagram.com/yumifood2026" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center p-5 bg-white rounded-2xl shadow-xs hover:shadow-md transition border border-yumi-warm/40 group">
+                        <i class="fa-brands fa-instagram text-3xl text-pink-600 mb-2 group-hover:scale-110 transition"></i>
+                        <span class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Instagram</span>
+                        <span class="text-sm font-bold text-yumi-brown mt-1">@yumifood2026</span>
+                    </a>
+
+                    <!-- Correo Electrónico -->
+                    <a id="email-link" href="mailto:contacto@yumifood.com" class="flex flex-col items-center p-5 bg-white rounded-2xl shadow-xs hover:shadow-md transition border border-yumi-warm/40 group">
+                        <i class="fa-regular fa-envelope text-3xl text-yumi-accent mb-2 group-hover:scale-110 transition"></i>
+                        <span class="text-xs text-gray-500 uppercase font-semibold tracking-wider">Correo</span>
+                        <span id="contact-email-text" class="text-xs font-bold text-yumi-brown mt-1 break-all">contacto@yumifood.com</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-yumi-dark text-yumi-beige text-center py-6 border-t border-yumi-brown/30 mt-12">
+        <p class="text-sm font-medium">© 2026 YUMI. Todos los derechos reservados.</p>
+        <p class="text-xs text-gray-400 mt-1 italic">Sabores artesanales & cocina con amor</p>
+    </footer>
+
+    <!-- CARRITO DRAWER -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 flex justify-end transition-opacity duration-300 opacity-0 pointer-events-none">
+        <!-- Overlay -->
+        <div onclick="toggleCartDrawer(false)" class="absolute inset-0 bg-black/50 backdrop-blur-xs"></div>
+        
+        <!-- Panel Lateral -->
+        <div class="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col z-10 transform transition-transform duration-300 translate-x-full" id="cart-drawer-panel">
+            <!-- Header Carrito -->
+            <div class="p-4 bg-yumi-cream border-b border-yumi-warm/60 flex justify-between items-center">
+                <h3 class="font-serif text-xl font-bold text-yumi-brown flex items-center gap-2">
+                    <i class="fa-solid fa-basket-shopping text-yumi-accent"></i> Resumen de Pedido
+                </h3>
+                <button onclick="toggleCartDrawer(false)" class="text-gray-500 hover:text-black p-2 rounded-lg" aria-label="Cerrar carrito">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Items del Carrito -->
+            <div id="cart-items" class="flex-grow overflow-y-auto p-4 space-y-3">
+                <!-- Dinámico -->
+            </div>
+
+            <!-- Total y Formulario de Cliente -->
+            <div class="p-4 bg-yumi-cream border-t border-yumi-warm/60 space-y-4">
+                <div class="flex justify-between items-center font-serif text-lg font-bold text-yumi-brown border-b border-yumi-warm/40 pb-3">
+                    <span>Total General:</span>
+                    <span id="cart-total" class="text-yumi-accent">$0</span>
+                </div>
+
+                <!-- Formulario de Pedido -->
+                <form id="order-form" onsubmit="processOrder(event)" class="space-y-2.5">
+                    <p class="text-xs font-bold uppercase text-yumi-brown/80 tracking-wider">Datos para la entrega</p>
+                    
+                    <div>
+                        <input type="text" id="cust-name" required placeholder="Nombre completo *" class="w-full text-xs px-3 py-2 border border-yumi-warm/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-yumi-accent bg-white">
+                    </div>
+                    <div>
+                        <input type="text" id="cust-address" required placeholder="Dirección física de entrega *" class="w-full text-xs px-3 py-2 border border-yumi-warm/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-yumi-accent bg-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="email" id="cust-email" required placeholder="Correo electrónico *" class="w-full text-xs px-3 py-2 border border-yumi-warm/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-yumi-accent bg-white">
+                        <input type="tel" id="cust-phone" required placeholder="WhatsApp / Teléfono *" class="w-full text-xs px-3 py-2 border border-yumi-warm/80 rounded-lg focus:outline-none focus:ring-2 focus:ring-yumi-accent bg-white">
+                    </div>
+
+                    <button type="submit" id="btn-submit-order" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition flex items-center justify-center gap-2 mt-2 active:scale-95">
+                        <i class="fa-brands fa-whatsapp text-lg"></i>
+                        <span class="text-sm">Enviar pedido por WhatsApp</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN MODAL -->
+    <div id="admin-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 transition-opacity duration-300 opacity-0 pointer-events-none">
+        <div onclick="toggleAdminModal(false)" class="absolute inset-0 bg-black/60 backdrop-blur-xs"></div>
+        
+        <div class="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[92vh] flex flex-col overflow-hidden z-10 border border-yumi-warm/40">
+            <!-- Admin Header -->
+            <div class="p-4 bg-yumi-dark text-white flex justify-between items-center">
+                <h3 class="font-serif text-lg font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-user-shield text-yumi-accent"></i> Panel Administrativo YUMI
+                </h3>
+                <button onclick="toggleAdminModal(false)" class="text-gray-300 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Login Section -->
+            <div id="admin-login-section" class="p-8 text-center space-y-4 my-auto">
+                <div class="w-16 h-16 bg-yumi-beige rounded-full flex items-center justify-center mx-auto text-yumi-brown">
+                    <i class="fa-solid fa-lock text-2xl"></i>
+                </div>
+                <h4 class="font-serif text-xl font-bold text-yumi-brown">Acceso de Administración</h4>
+                <p class="text-xs text-gray-500 max-w-xs mx-auto">Ingresa la clave de administrador para gestionar productos, inventario y configuraciones.</p>
+                <form onsubmit="loginAdmin(event)" class="max-w-xs mx-auto space-y-3 pt-2">
+                    <input type="password" id="admin-pass" placeholder="Contraseña de acceso" required class="w-full text-sm px-3 py-2 border border-yumi-warm rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-yumi-accent">
+                    <button type="submit" class="w-full bg-yumi-brown hover:bg-yumi-dark text-white text-sm font-bold py-2.5 rounded-lg transition shadow-xs">
+                        Ingresar al Panel
+                    </button>
+                    <p class="text-[10px] text-gray-400">Clave predeterminada: <code class="bg-gray-100 px-1 py-0.5 rounded">admin123</code></p>
+                </form>
+            </div>
+
+            <!-- Dashboard Section (Protegido) -->
+            <div id="admin-dashboard-section" class="p-4 md:p-6 flex-grow overflow-y-auto space-y-5 hidden">
+                <!-- Resumen de Inventario y Controles -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-yumi-beige/30 p-3.5 rounded-xl border border-yumi-warm/40">
+                    <div>
+                        <h4 class="font-bold text-yumi-brown text-sm">Control de Inventario</h4>
+                        <p class="text-xs text-gray-500" id="admin-stats-summary">Cargando estadísticas...</p>
+                    </div>
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <button onclick="openProductForm()" class="bg-yumi-accent hover:bg-yumi-accentDark text-white text-xs font-bold px-3 py-2 rounded-lg shadow-xs transition flex items-center justify-center gap-1.5 w-full sm:w-auto">
+                            <i class="fa-solid fa-plus"></i> Nuevo Producto
+                        </button>
+                        <button onclick="logoutAdmin()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-semibold px-3 py-2 rounded-lg transition">
+                            Salir
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Formulario Agregar/Editar Producto -->
+                <form id="product-form" onsubmit="saveProduct(event)" class="bg-white p-4 rounded-xl border border-yumi-warm space-y-3 shadow-xs hidden">
+                    <div class="flex justify-between items-center border-b border-yumi-warm/40 pb-2">
+                        <h5 id="form-title" class="font-bold text-xs uppercase text-yumi-brown tracking-wider">Agregar Producto</h5>
+                        <button type="button" onclick="closeProductForm()" class="text-gray-400 hover:text-black"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                    <input type="hidden" id="prod-id">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Nombre *</label>
+                            <input type="text" id="prod-title" required class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-yumi-accent">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Precio ($) *</label>
+                            <input type="number" id="prod-price" required min="0" step="100" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-yumi-accent">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Stock disponible *</label>
+                            <input type="number" id="prod-stock" required min="0" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-yumi-accent">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Estado *</label>
+                            <select id="prod-status" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-yumi-accent">
+                                <option value="Disponible">Disponible</option>
+                                <option value="Agotado">Agotado</option>
+                                <option value="Próximamente">Próximamente</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">URL de la Imagen</label>
+                        <input type="url" id="prod-img" placeholder="https://ejemplo.com/imagen.jpg" class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-yumi-accent">
+                    </div>
+
+                    <div>
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Descripción corta *</label>
+                        <textarea id="prod-desc" rows="2" required class="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-yumi-accent"></textarea>
+                    </div>
+                    
+                    <div class="flex justify-end gap-2 pt-2">
+                        <button type="button" onclick="closeProductForm()" class="text-xs px-3 py-1.5 border rounded hover:bg-gray-100">Cancelar</button>
+                        <button type="submit" class="text-xs px-4 py-1.5 bg-emerald-600 text-white font-bold rounded hover:bg-emerald-700 shadow-xs">Guardar Producto</button>
+                    </div>
+                </form>
+
+                <!-- Configuración del Correo de Contacto -->
+                <div class="bg-gray-50 p-3 rounded-xl border border-gray-200 text-xs space-y-2">
+                    <label class="font-bold text-yumi-brown block">Correo Electrónico Oficial de Contacto</label>
+                    <div class="flex gap-2">
+                        <input type="email" id="edit-email-input" placeholder="correo@ejemplo.com" class="p-2 border border-gray-300 rounded flex-grow text-xs">
+                        <button onclick="updateEmailConfig()" class="bg-yumi-brown hover:bg-yumi-dark text-white font-semibold px-3 py-1.5 rounded transition">
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabla de Inventario -->
+                <div class="overflow-x-auto border border-yumi-warm/40 rounded-xl">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-yumi-beige/60 text-yumi-brown font-bold border-b border-yumi-warm/60">
+                                <th class="p-2.5">Producto</th>
+                                <th class="p-2.5">Precio</th>
+                                <th class="p-2.5">Stock</th>
+                                <th class="p-2.5">Estado</th>
+                                <th class="p-2.5 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-inventory-table" class="divide-y divide-gray-100">
+                            <!-- Dinámico -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIC & STATE MANAGEMENT -->
+    <script>
+        // --- DATOS INICIALES DEL CATÁLOGO ---
+        const INITIAL_PRODUCTS = [
+            {
+                id: 'prod-1',
+                title: 'Rollos Artesanales de Canela',
+                desc: 'Esponjosos rollos caseros horneados con canela aromática y suave glaseado.',
+                price: 14000,
+                stock: 10,
+                status: 'Disponible',
+                img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'prod-2',
+                title: 'Bowl Gastronómico Cerdo Agridulce',
+                desc: 'Receta casera de cerdo en reducción agridulce, acompañado de arroz y patacones crujientes.',
+                price: 28000,
+                stock: 6,
+                status: 'Disponible',
+                img: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'prod-3',
+                title: 'Bolones de Plátano & Queso',
+                desc: 'Tradiación artesanal elaborada con verde majado, relleno de abundante queso campesino.',
+                price: 18000,
+                stock: 0,
+                status: 'Agotado',
+                img: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80'
+            }
+        ];
+
+        // --- ESTADO GLOBAL ---
+        let products = JSON.parse(localStorage.getItem('yumi_products')) || INITIAL_PRODUCTS;
+        let cart = JSON.parse(localStorage.getItem('yumi_cart')) || [];
+        let configEmail = localStorage.getItem('yumi_email') || 'contacto@yumifood.com';
+        let isAdminLoggedIn = false;
+
+        // --- RENDERIZADO DEL CATÁLOGO PÚBLICO ---
+        function renderCatalog() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = '';
+
+            products.forEach(p => {
+                // Auto ajuste de estado si stock llega a 0
+                const isOutOfStock = p.stock <= 0 || p.status === 'Agotado';
+                const currentStatus = isOutOfStock ? 'Agotado' : p.status;
+                
+                let badgeClass = 'bg-emerald-100 text-emerald-800 border-emerald-200';
+                if (currentStatus === 'Agotado') badgeClass = 'bg-red-100 text-red-800 border-red-200';
+                if (currentStatus === 'Próximamente') badgeClass = 'bg-amber-100 text-amber-800 border-amber-200';
+
+                const cardHtml = `
+                    <div class="product-card bg-white rounded-2xl overflow-hidden border border-yumi-warm/40 shadow-xs flex flex-col justify-between">
+                        <div>
+                            <!-- Imagen y Badges -->
+                            <div class="relative h-48 w-full bg-yumi-beige overflow-hidden">
+                                <img src="${p.img || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80'}" alt="${p.title}" class="w-full h-full object-cover">
+                                <span class="absolute top-3 right-3 text-[11px] font-bold px-2.5 py-1 rounded-full border ${badgeClass}">
+                                    ${currentStatus}
+                                </span>
+                            </div>
+
+                            <!-- Información -->
+                            <div class="p-5">
+                                <h3 class="font-serif text-lg font-bold text-yumi-brown mb-1.5 leading-snug">${p.title}</h3>
+                                <p class="text-xs text-gray-600 mb-4 line-clamp-2 leading-relaxed">${p.desc}</p>
+                                
+                                <div class="flex items-center justify-between text-xs pt-2 border-t border-yumi-warm/30">
+                                    <span class="text-gray-500 font-medium">
+                                        Stock: <strong class="${p.stock <= 2 ? 'text-red-600 font-bold' : 'text-gray-700'}">${p.stock} un.</strong>
+                                    </span>
+                                    <span class="font-bold text-yumi-accent text-lg">$${p.price.toLocaleString('es-CO')}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botón Agregar -->
+                        <div class="p-5 pt-0">
+                            <button onclick="addToCart('${p.id}')" ${isOutOfStock ? 'disabled' : ''} 
+                                class="w-full py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition ${
+                                    isOutOfStock 
+                                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200' 
+                                    : 'bg-yumi-brown hover:bg-yumi-dark text-white shadow-xs active:scale-95'
+                                }">
+                                <i class="fa-solid fa-cart-plus"></i> ${isOutOfStock ? 'Agotado' : 'Agregar al pedido'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.innerHTML += cardHtml;
+            });
+
+            // Actualizar referencias de correo
+            document.getElementById('contact-email-text').textContent = configEmail;
+            document.getElementById('email-link').href = `mailto:${configEmail}`;
+            saveState();
+        }
+
+        // --- SISTEMA DE CARRITO ---
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product || product.stock <= 0) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                if (existingItem.qty < product.stock) {
+                    existingItem.qty++;
+                    showToast(`Añadida otra unidad de ${product.title}`);
+                } else {
+                    showToast(`Stock máximo alcanzado (${product.stock} un.)`, true);
+                    return;
+                }
+            } else {
+                cart.push({ id: product.id, title: product.title, price: product.price, qty: 1 });
+                showToast(`${product.title} añadido al pedido`);
+            }
+
+            updateCartUI();
+            toggleCartDrawer(true);
+        }
+
+        function updateCartQty(productId, delta) {
+            const cartItem = cart.find(i => i.id === productId);
+            const product = products.find(p => p.id === productId);
+            if (!cartItem || !product) return;
+
+            cartItem.qty += delta;
+            
+            if (cartItem.qty > product.stock) {
+                cartItem.qty = product.stock;
+                showToast(`Máximo de stock disponible: ${product.stock}`, true);
+            }
+
+            if (cartItem.qty <= 0) {
+                cart = cart.filter(i => i.id !== productId);
+            }
+
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartContainer = document.getElementById('cart-items');
+            const cartTotal = document.getElementById('cart-total');
+            const cartBadge = document.getElementById('cart-badge');
+
+            cartContainer.innerHTML = '';
+            let grandTotal = 0;
+            let totalQty = 0;
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = `
+                    <div class="text-center py-16 text-gray-400 space-y-3">
+                        <i class="fa-solid fa-basket-shopping text-4xl text-yumi-warm"></i>
+                        <p class="text-xs font-medium">Tu pedido está vacío.<br>Explora nuestro catálogo y agrega tus antojos.</p>
+                    </div>
+                `;
+            } else {
+                cart.forEach(item => {
+                    const subtotal = item.price * item.qty;
+                    grandTotal += subtotal;
+                    totalQty += item.qty;
+
+                    cartContainer.innerHTML += `
+                        <div class="flex items-center justify-between bg-yumi-beige/30 p-3 rounded-xl border border-yumi-warm/40 text-xs">
+                            <div class="flex-grow pr-2">
+                                <p class="font-bold text-yumi-brown">${item.title}</p>
+                                <p class="text-gray-500 mt-0.5">
+                                    $${item.price.toLocaleString('es-CO')} × ${item.qty} = 
+                                    <strong class="text-yumi-accent font-bold">$${subtotal.toLocaleString('es-CO')}</strong>
+                                </p>
+                            </div>
+                            <div class="flex items-center gap-1.5 bg-white p-1 rounded-lg border border-yumi-warm/60">
+                                <button onclick="updateCartQty('${item.id}', -1)" class="w-6 h-6 rounded flex items-center justify-center text-gray-600 font-bold hover:bg-yumi-beige transition">-</button>
+                                <span class="font-bold px-1 min-w-[16px] text-center">${item.qty}</span>
+                                <button onclick="updateCartQty('${item.id}', 1)" class="w-6 h-6 rounded flex items-center justify-center text-gray-600 font-bold hover:bg-yumi-beige transition">+</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            cartTotal.textContent = `$${grandTotal.toLocaleString('es-CO')}`;
+            if (totalQty > 0) {
+                cartBadge.textContent = totalQty;
+                cartBadge.classList.remove('hidden');
+            } else {
+                cartBadge.classList.add('hidden');
+            }
+
+            saveState();
+        }
+
+        // --- PROCESAMIENTO DE PEDIDO Y WHATSAPP ---
+        function processOrder(e) {
+            e.preventDefault();
+
+            if (cart.length === 0) {
+                showToast('Agrega productos a tu pedido antes de continuar', true);
+                return;
+            }
+
+            const name = document.getElementById('cust-name').value.trim();
+            const address = document.getElementById('cust-address').value.trim();
+            const email = document.getElementById('cust-email').value.trim();
+            const phone = document.getElementById('cust-phone').value.trim();
+
+            let productSummaryText = '';
+            let grandTotal = 0;
+
+            // Descuento automático de inventario
+            cart.forEach(cartItem => {
+                const product = products.find(p => p.id === cartItem.id);
+                if (product) {
+                    product.stock = Math.max(0, product.stock - cartItem.qty);
+                    if (product.stock === 0) {
+                        product.status = 'Agotado';
+                    }
+                }
+
+                const subtotal = cartItem.price * cartItem.qty;
+                grandTotal += subtotal;
+                productSummaryText += `- ${cartItem.title} — Cantidad: ${cartItem.qty} — Precio: $${cartItem.price.toLocaleString('es-CO')} — Subtotal: $${subtotal.toLocaleString('es-CO')}\n`;
+            });
+
+            // Formato exacto de mensaje solicitado
+            const formattedMessage = 
+`PEDIDO YUMI
+
+Cliente: ${name}
+Dirección: ${address}
+Correo: ${email}
+WhatsApp: ${phone}
+
+Productos:
+${productSummaryText}
+TOTAL: $${grandTotal.toLocaleString('es-CO')}`;
+
+            // Resetear estado del carrito
+            cart = [];
+            document.getElementById('order-form').reset();
+            updateCartUI();
+            renderCatalog();
+            toggleCartDrawer(false);
+
+            if (isAdminLoggedIn) renderAdminTable();
+
+            // Abrir WhatsApp
+            const targetPhone = '573212731924';
+            const waUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(formattedMessage)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        // --- MOSTRAR DRAWER / MODAL ---
+        function toggleCartDrawer(open) {
+            const drawer = document.getElementById('cart-drawer');
+            const panel = document.getElementById('cart-drawer-panel');
+            
+            if (open) {
+                drawer.classList.remove('opacity-0', 'pointer-events-none');
+                panel.classList.remove('translate-x-full');
+            } else {
+                drawer.classList.add('opacity-0', 'pointer-events-none');
+                panel.classList.add('translate-x-full');
+            }
+        }
+
+        function toggleAdminModal(open) {
+            const modal = document.getElementById('admin-modal');
+            if (open === undefined) open = modal.classList.contains('opacity-0');
+            
+            if (open) {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+            } else {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }
+        }
+
+        // --- LÓGICA PANEL ADMINISTRATIVO ---
+        function loginAdmin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('admin-pass').value;
+            
+            if (pass === 'admin123') {
+                isAdminLoggedIn = true;
+                document.getElementById('admin-login-section').classList.add('hidden');
+                document.getElementById('admin-dashboard-section').classList.remove('hidden');
+                document.getElementById('admin-pass').value = '';
+                renderAdminTable();
+            } else {
+                alert('Contraseña incorrecta. Intente nuevamente.');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            document.getElementById('admin-login-section').classList.remove('hidden');
+            document.getElementById('admin-dashboard-section').classList.add('hidden');
+        }
+
+        function renderAdminTable() {
+            const tbody = document.getElementById('admin-inventory-table');
+            tbody.innerHTML = '';
+
+            let totalStock = 0;
+            let outOfStockCount = 0;
+
+            products.forEach(p => {
+                totalStock += p.stock;
+                if (p.stock <= 0) outOfStockCount++;
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50/80">
+                        <td class="p-2.5 font-bold text-yumi-brown">${p.title}</td>
+                        <td class="p-2.5">$${p.price.toLocaleString('es-CO')}</td>
+                        <td class="p-2.5 font-bold ${p.stock <= 2 ? 'text-red-600' : 'text-gray-700'}">${p.stock}</td>
+                        <td class="p-2.5">
+                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                p.status === 'Agotado' || p.stock === 0 ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'
+                            }">
+                                ${p.stock === 0 ? 'Agotado' : p.status}
+                            </span>
+                        </td>
+                        <td class="p-2.5 text-right space-x-1">
+                            <button onclick="editProduct('${p.id}')" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deleteProduct('${p.id}')" class="p-1.5 text-red-600 hover:bg-red-50 rounded" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('admin-stats-summary').textContent = `${products.length} productos registrados — ${totalStock} unidades en stock — ${outOfStockCount} agotados.`;
+            document.getElementById('edit-email-input').value = configEmail;
+        }
+
+        function openProductForm(editId = null) {
+            const form = document.getElementById('product-form');
+            form.classList.remove('hidden');
+            
+            if (editId) {
+                const p = products.find(prod => prod.id === editId);
+                document.getElementById('form-title').textContent = 'Editar Producto';
+                document.getElementById('prod-id').value = p.id;
+                document.getElementById('prod-title').value = p.title;
+                document.getElementById('prod-price').value = p.price;
+                document.getElementById('prod-stock').value = p.stock;
+                document.getElementById('prod-status').value = p.status;
+                document.getElementById('prod-img').value = p.img || '';
+                document.getElementById('prod-desc').value = p.desc;
+            } else {
+                document.getElementById('form-title').textContent = 'Agregar Nuevo Producto';
+                form.reset();
+                document.getElementById('prod-id').value = '';
+            }
+        }
+
+        function closeProductForm() {
+            document.getElementById('product-form').classList.add('hidden');
+        }
+
+        function saveProduct(e) {
+            e.preventDefault();
+            const id = document.getElementById('prod-id').value;
+            const title = document.getElementById('prod-title').value.trim();
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const stock = parseInt(document.getElementById('prod-stock').value);
+            let status = document.getElementById('prod-status').value;
+            const img = document.getElementById('prod-img').value.trim();
+            const desc = document.getElementById('prod-desc').value.trim();
+
+            if (stock <= 0) status = 'Agotado';
+
+            if (id) {
+                const index = products.findIndex(p => p.id === id);
+                if (index !== -1) {
+                    products[index] = { id, title, price, stock, status, img, desc };
+                }
+            } else {
+                const newProduct = {
+                    id: 'prod-' + Date.now(),
+                    title, price, stock, status, img, desc
+                };
+                products.push(newProduct);
+            }
+
+            closeProductForm();
+            renderAdminTable();
+            renderCatalog();
+            showToast('Inventario actualizado exitosamente');
+        }
+
+        function editProduct(id) {
+            openProductForm(id);
+        }
+
+        function deleteProduct(id) {
+            if (confirm('¿Desea eliminar este producto del catálogo?')) {
+                products = products.filter(p => p.id !== id);
+                cart = cart.filter(c => c.id !== id);
+                renderAdminTable();
+                renderCatalog();
+                updateCartUI();
+                showToast('Producto eliminado');
+            }
+        }
+
+        function updateEmailConfig() {
+            const newEmail = document.getElementById('edit-email-input').value.trim();
+            if (newEmail) {
+                configEmail = newEmail;
+                saveState();
+                renderCatalog();
+                showToast('Correo de contacto actualizado');
+            }
+        }
+
+        // --- NOTIFICACIONES Y PERSISTENCIA ---
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast-notification');
+            const msg = document.getElementById('toast-message');
+            
+            msg.textContent = message;
+            toast.className = `fixed bottom-4 right-4 z-50 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transition-all duration-300 translate-y-0 opacity-100 ${
+                isError ? 'bg-red-700' : 'bg-yumi-brown'
+            }`;
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+
+        function saveState() {
+            localStorage.setItem('yumi_products', JSON.stringify(products));
+            localStorage.setItem('yumi_cart', JSON.stringify(cart));
+            localStorage.setItem('yumi_email', configEmail);
+        }
+
+        // INICIALIZACIÓN DE LA APLICACIÓN
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCatalog();
+            updateCartUI();
+        });
+    </script>
+</body>
+</html>
+```
+
+### Funcionalidades integradas
+1. **Catálogo dinámico:** Renderizado automático de productos con tarjetas visuales, gestión de stock e insitgnias de disponibilidad. Si el stock llega a 0, el botón se bloquea automáticamente.
+2. **Carrito de compras:** Panel desplegable que permite ajustar cantidades, ver subtotales, calcular el total general y recopilar la información del cliente.
+3. **Generador de pedidos para WhatsApp:** Genera el formato de mensaje estructurado para enviarlo al número `3212731924`.
+4. **Descuento de inventario:** Resta las unidades solicitadas al confirmar la orden y desactiva compras adicionales si el producto se agota.
+5. **Panel administrativo:** Acceso mediante clave (`admin123`) para agregar, editar, eliminar productos, cambiar fotos, stock, precios y el correo electrónico oficial.
+6. **Diseño responsivo y estética artesanal:** Utiliza la paleta gastronómica en tonos crema, beige, café y acentos cálidos con Tailwind CSS.
